@@ -36,7 +36,7 @@ options=(
 source=(
   "$_srcname::git+$url.git#branch=$_branch"
   "extra.config"
-  "https://raw.githubusercontent.com/neokoni/arch_pkg_linux-nabu/refs/heads/main/patches/0001-HACK-remove-dirty-subfix.patch"
+  "https://raw.githubusercontent.com/neokoni/arch_pkg_linux-nabu/refs/heads/main/0001-HACK-remove-dirty-subfix.patch"
 )
 sha256sums=(
   "SKIP"
