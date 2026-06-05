@@ -1,10 +1,10 @@
 pkgbase=linux-nabu
-_branch=sm8150/6.14
+_branch=sm8150/6.18
 _srcname=linux-nabu
-pkgver=6.14.0.defb39db31e6
+pkgver=6.18.0.7094eb276962
 pkgrel=1
 pkgdesc='Snapdragon 855 Mainline Linux'
-url='https://gitlab.com/sm8150-mainline/linux'
+url='https://gitlab.com/neokoni/linux-nabu'
 arch=(aarch64)
 license=(GPL-2.0-only)
 makedepends=(
@@ -34,15 +34,11 @@ options=(
   !strip
 )
 source=(
-  "$_srcname::git+https://gitlab.com/sm8150-mainline/linux.git#branch=$_branch"
+  "$_srcname::git+$url.git#branch=$_branch"
   "extra.config"
-  "https://g.tx0.su/tx0/nabu-mainline-patches/raw/branch/main/0001-HACK-NABU-add-clk-delay-for-UFS.patch"
-  "https://g.tx0.su/tx0/nabu-mainline-patches/raw/branch/main/0002-HACK-NABU-change-freq-table-for-UFS.patch"
-  "https://g.tx0.su/tx0/nabu-mainline-patches/raw/branch/main/0003-NABU-dts-enable-ln8000-charger-reduce-charge-voltage.patch"
+  "https://raw.githubusercontent.com/neokoni/arch_pkg_linux-nabu/refs/heads/main/patches/0001-HACK-remove-dirty-subfix.patch"
 )
 sha256sums=(
-  "SKIP"
-  "SKIP"
   "SKIP"
   "SKIP"
   "SKIP"
@@ -72,7 +68,7 @@ prepare() {
 
   echo "Setting config..."
   cp ../extra.config ./arch/$KARCH/configs/extra.config
-  make defconfig sm8150.config extra.config
+  make -j$(nproc) defconfig sm8150.config extra.config
 
   make -s kernelrelease >version
 
@@ -84,7 +80,7 @@ prepare() {
 build() {
   cd $_srcname
   unset LDFLAGS
-  make Image.gz modules dtbs
+  make -j$(nproc) Image.gz modules dtbs
 }
 
 pkgver() {
@@ -130,7 +126,7 @@ _package() {
   ZSTD_CLEVEL=19 make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 \
     DEPMOD=/doesnt/exist modules_install # Suppress depmod
 
-  rm "$modulesdir"/build
+  rm "$modulesdir"/build || true
 }
 
 _package-headers() {
